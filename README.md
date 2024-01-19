@@ -14,7 +14,7 @@ The plugin is installed through IntelliJ IDEA:
 
 Please note that you will need internet access for the plugin to work, as it loads the documentation directly from the Bitcoin Core website.
 
-The plugin is available for download from the [JetBrains Plugins Repository](https://plugins.jetbrains.com/plugin/23574-bitcoindocs/) or from the [Releases](https://github.com/ZooMMaX/BitcoinDocs/releases/tag/1.0) section of this repository.
+The plugin is available for download from the [JetBrains Plugins Repository](https://plugins.jetbrains.com/plugin/23574-bitcoindocs/) or from the [Releases](https://github.com/ZooMMaX/BitcoinDocs/releases/tag/1.1) section of this repository.
 
 ### Video demonstration
 [![Watch the video](https://i9.ytimg.com/vi_webp/9Hv7fMPu0GE/mq2.webp?sqp=CMSaqq0G-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGFwgXChcMA8=&rs=AOn4CLCdiP4_bt8hZQIHq4qfuxVhE0dngw)](https://youtu.be/9Hv7fMPu0GE)
