@@ -8,7 +8,6 @@ public class Result {
     private List<String> description;
 
     public Result(String raw) {
-        raw = raw.replaceAll("Result:\n\n", "");
         String[] lines = raw.split("\n");
 
         jsonschema = new ArrayList<>();

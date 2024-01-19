@@ -10,7 +10,7 @@ public class Blocks {
     private List<String> examples;
 
     public Blocks(String raw) {
-        String[] parts = raw.split("Result:|Examples:");
+        String[] parts = raw.split("Result|Examples:");
         this.description = parts[0].trim();
 
         if (parts.length > 1) {

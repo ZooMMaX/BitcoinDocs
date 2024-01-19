@@ -225,6 +225,9 @@ final class BitcoinWindow implements ToolWindowFactory, DumbAware {
                     panelDocs.add(description, "wrap");
                     panelDocs.add(new JBLabel("Result:"), "wrap");
                     for (int i = 0; i < blocks.getResult().getJsonschema().size(); i++) {
+                        if (blocks.getResult().getJsonschema().get(i).isEmpty() || blocks.getResult().getJsonschema().get(i).equals(":")) {
+                            continue;
+                        }
                         JBTextArea jsonschema = new JBTextArea(blocks.getResult().getJsonschema().get(i));
                         jsonschema.setEditable(false);
                         jsonschema.setLineWrap(true);
