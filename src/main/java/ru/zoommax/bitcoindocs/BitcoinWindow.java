@@ -6,8 +6,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
+import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.openapi.wm.ex.ToolWindowEx;
+import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBPanel;
+import com.intellij.ui.components.JBTextArea;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import net.miginfocom.swing.MigLayout;
@@ -16,6 +20,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import ru.zoommax.bitcoindocs.parser.Blocks;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,22 +31,26 @@ import java.util.List;
 final class BitcoinWindow implements ToolWindowFactory, DumbAware {
     private static final Logger log = Logger.getInstance(BitcoinWindow.class);
 
+    static void setToolWindowWidth(Project project, String toolWindowID, int desiredWidth) {
+        ToolWindowManager instance = ToolWindowManager.getInstance(project);
+        ToolWindowEx tw = (ToolWindowEx) instance.getToolWindow(toolWindowID);
+        int width = tw.getComponent().getWidth();
+        tw.stretchWidth(desiredWidth - width);
+    }
+
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        BitcoinDocsWindowContent toolWindowContent = new BitcoinDocsWindowContent(project, toolWindow);
+        BitcoinDocsWindowContent toolWindowContent = new BitcoinDocsWindowContent();
         Content content = ContentFactory.getInstance().createContent(toolWindowContent.getContentPanel(), "", false);
         toolWindow.getContentManager().addContent(content);
+        setToolWindowWidth(project, toolWindow.getId(), 450);
     }
 
     private static class BitcoinDocsWindowContent {
         private static final String LOADING = "/icons/847.gif";
         private final JBPanel contentPanel = new JBPanel();
-        private final Project project;
-        private final ToolWindow toolWindow;
 
-        public BitcoinDocsWindowContent(Project project, ToolWindow toolWindow) {
-            this.project = project;
-            this.toolWindow = toolWindow;
+        public BitcoinDocsWindowContent() {
             contentPanel.setLayout(new MigLayout("fillx", "[grow,fill]", "[][fill]"));
             bitcoinCoreVersionChooser();
         }
@@ -70,22 +79,18 @@ final class BitcoinWindow implements ToolWindowFactory, DumbAware {
                 label.setVerticalAlignment(SwingConstants.TOP);
                 label.setFont(new Font("Arial", Font.BOLD, 20));
                 ComboBox<String> comboBox = new ComboBox<>();
-                comboBox.addItem("26.0.0");
-                comboBox.addItem("25.0.0");
-                comboBox.addItem("24.0.0");
-                comboBox.addItem("23.0.0");
-                comboBox.addItem("22.0.0");
-                comboBox.addItem("0.21.0");
-                comboBox.addItem("0.20.0");
-                comboBox.addItem("0.19.0");
-                comboBox.addItem("0.18.0");
-                comboBox.addItem("0.17.0");
-                comboBox.addItem("0.16.0");
-                comboBox.addItem("0.16.3");
-                comboBox.addItem("0.16.2");
-                comboBox.addItem("0.16.1");
-                comboBox.addItem("0.16.0");
-                comboBox.setSelectedItem("26.0.0");
+
+                Document doc = null;
+                try {
+                    doc = Jsoup.connect("https://bitcoincore.org/en/doc/").get();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                Elements elements = doc.select("article").select("li");
+                for (Element element : elements) {
+                    String version = element.select("a").text();
+                    comboBox.addItem(version);
+                }
 
                 JButton button = new JButton("Go to docs");
                 button.addActionListener(e -> {
@@ -193,29 +198,7 @@ final class BitcoinWindow implements ToolWindowFactory, DumbAware {
                     Document doc = Jsoup.connect(url).get();
                     String code = doc.select("code").first().text();
 
-
-                    String html = "<html><body>" +
-                            "<h3>"+rpcMenu.getH3()+"</h3>" +
-                            "<h4>"+rpcMenu.getNames().get(rpcMenu.getUrls().indexOf(url))+"</h4>" +
-                            "<p>"+doc.select("p").first().text()+"</p>" +
-                            "<p>Example:</p>" +
-                            "<pre><code>"+code+"</code></pre>" +
-                            "</body></html>";
-                    JEditorPane editorPane = new JEditorPane("text/html", html);
-                    editorPane.setEditable(false);
-
-                    JButton switchView = new JButton("Switch view");
-                    switchView.addActionListener(e -> {
-                        if (editorPane.getContentType().equals("text/html")) {
-                            editorPane.setContentType("text/plain");
-                            editorPane.setText(code);
-                            contentPanel.updateUI();
-                        } else {
-                            editorPane.setContentType("text/html");
-                            editorPane.setText(html);
-                            contentPanel.updateUI();
-                        }
-                    });
+                    Blocks blocks = new Blocks(code);
 
                     JBLabel label = new JBLabel("RPC API");
                     label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -224,10 +207,70 @@ final class BitcoinWindow implements ToolWindowFactory, DumbAware {
                     JButton back = new JButton("Back");
                     back.addActionListener(e -> listMethods(rpcMenu));
 
+                    JBLabel path = new JBLabel(rpcMenu.getH3(), SwingConstants.CENTER);
+                    path.setFont(new Font("Arial", Font.BOLD, 15));
+
+                    JBPanel panelDocs = new JBPanel();
+                    panelDocs.setLayout(new MigLayout("fillx", "[grow,fill]", "[][fill]"));
+
+                    JBPanel panel = new JBPanel();
+                    panel.setLayout(new MigLayout("fillx", "[grow,fill]", "[][fill]"));
+
+                    JBTextArea description = new JBTextArea();
+                    description.setEditable(false);
+                    description.setLineWrap(true);
+                    description.setWrapStyleWord(true);
+                    description.setText(blocks.getDescription());
+
+                    panelDocs.add(description, "wrap");
+                    panelDocs.add(new JBLabel("Result:"), "wrap");
+                    for (int i = 0; i < blocks.getResult().getJsonschema().size(); i++) {
+                        JBTextArea jsonschema = new JBTextArea(blocks.getResult().getJsonschema().get(i));
+                        jsonschema.setEditable(false);
+                        jsonschema.setLineWrap(true);
+                        jsonschema.setWrapStyleWord(true);
+                        jsonschema.setFont(new Font("Arial", Font.BOLD, 15));
+                        jsonschema.setBackground(JBColor.LIGHT_GRAY);
+                        jsonschema.setDisabledTextColor(JBColor.BLACK);
+                        jsonschema.setBorder(BorderFactory.createLineBorder(JBColor.BLACK));
+                        panel.add(jsonschema);
+                        JBTextArea descriptionTextArea = new JBTextArea(blocks.getResult().getDescription().get(i));
+                        descriptionTextArea.setEditable(false);
+                        descriptionTextArea.setLineWrap(true);
+                        descriptionTextArea.setWrapStyleWord(true);
+                        descriptionTextArea.setFont(new Font("Arial", Font.BOLD, 15));
+                        descriptionTextArea.setBackground(JBColor.LIGHT_GRAY);
+                        descriptionTextArea.setDisabledTextColor(JBColor.BLACK);
+                        descriptionTextArea.setBorder(BorderFactory.createLineBorder(JBColor.BLACK));
+                        panel.add(descriptionTextArea, "wrap");
+                    }
+
+                    panelDocs.add(panel, "wrap");
+                    panelDocs.add(new JBLabel("Examples:"), "wrap");
+                    for (String example : blocks.getExamples()) {
+                        if (example.isEmpty()) {
+                            continue;
+                        }
+                        JBTextArea exampleTextArea = new JBTextArea(example);
+                        exampleTextArea.setEditable(false);
+                        exampleTextArea.setLineWrap(true);
+                        exampleTextArea.setWrapStyleWord(true);
+                        exampleTextArea.setBackground(JBColor.LIGHT_GRAY);
+                        exampleTextArea.setDisabledTextColor(JBColor.BLACK);
+                        exampleTextArea.setBorder(BorderFactory.createLineBorder(JBColor.BLACK));
+                        panelDocs.add(exampleTextArea, "wrap");
+                    }
+
+                    JScrollPane scrollPane = new JScrollPane(panelDocs);
+                    scrollPane.setBorder(BorderFactory.createEmptyBorder());
+                    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+                    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+                    scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+
                     contentPanel.add(label, "wrap");
                     contentPanel.add(back, "wrap");
-                    contentPanel.add(editorPane, "wrap");
-                    contentPanel.add(switchView, "wrap");
+                    contentPanel.add(path, "wrap");
+                    contentPanel.add(scrollPane, "wrap");
                     loading(false);
                 } catch (IOException e) {
                     log.error(e);
