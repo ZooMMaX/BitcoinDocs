@@ -8,15 +8,23 @@
   <name>BitcoinDocs</name>
 
   <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-  <vendor email="support@yourcompany.com" url="https://www.yourcompany.com">YourCompany</vendor>
+  <vendor email="zoommax2009@gmail.com" url="https://github.com/ZooMMaX/BitcoinDocs">BitcoinDocs</vendor>
 
   <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
        Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
        Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
-  <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
-  ]]></description>
+  <description>
+    <![CDATA[
+        <h1>BitcoinDocs</h1>
+        <p>BitcoinDocs is a plugin for IntelliJ IDEA that provides convenient access to Bitcoin RPC documentation right from your development environment.</p>
+        <p>Main features:</p>
+        <ul>
+            <li>View Bitcoin RPC documentation in the tool window</li>
+            <li>Quick access to documentation right from the development environment</li>
+        </ul>
+        <p>The plugin is developed and maintained by ZooMMaX.</p>
+    ]]>
+  </description>
 
   <!-- Product and plugin compatibility requirements.
        Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->

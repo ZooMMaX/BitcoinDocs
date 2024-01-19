@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "ru.zoommax"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 repositories {
   mavenCentral()
@@ -47,6 +47,5 @@ tasks {
 
   dependencies {
     implementation("org.jsoup:jsoup:1.17.2")
-
   }
 }
