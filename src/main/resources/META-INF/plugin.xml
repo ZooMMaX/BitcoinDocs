@@ -23,8 +23,13 @@
         <p>Main features:</p>
         <ul>
             <li>View Bitcoin RPC documentation in the tool window</li>
-            <li>Parsed pseudoJSON and description</li>
+            <li>Parsed description</li>
+            <li>Parsed attributes</li>
+            <li>Parsed results</li>
+            <li>Parsed examples</li>
             <li>Quick access to documentation right from the development environment</li>
+            <li>Comparison of methods in two versions of the API</li>
+            <li>Colorized</li>
         </ul>
         <p>The plugin is developed and maintained by ZooMMaX.</p>
     ]]>
