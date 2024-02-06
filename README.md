@@ -17,4 +17,4 @@ Please note that you will need internet access for the plugin to work, as it loa
 The plugin is available for download from the [JetBrains Plugins Repository](https://plugins.jetbrains.com/plugin/23574-bitcoindocs/) or from the [Releases](https://github.com/ZooMMaX/BitcoinDocs/releases/tag/1.2) section of this repository.
 
 ### Video demonstration
-[![Watch the video](https://i9.ytimg.com/vi_webp/9Hv7fMPu0GE/mq2.webp?sqp=CLy_y60G-oaymwEmCMACELQB8quKqQMa8AEB-AH-CYAC0AWKAgwIABABGFwgXChcMA8=&rs=AOn4CLC5gjLjLHM1m08IrqtSjC7zi9u_ZA)](https://youtu.be/9Hv7fMPu0GE)
+[![Watch the video](https://i.postimg.cc/Fsc9KJkQ/2024-02-06-23-17-23.jpg)](https://youtu.be/9Hv7fMPu0GE)
