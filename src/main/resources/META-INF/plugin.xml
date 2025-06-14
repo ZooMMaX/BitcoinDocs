@@ -10,7 +10,7 @@
   <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
   <vendor email="zoommax2009@gmail.com" url="https://github.com/ZooMMaX/BitcoinDocs">BitcoinDocs</vendor>
 
-  <version>1.3</version>
+  <version>1.4</version>
   <change-notes>Update for new JB versions compatibility</change-notes>
 
   <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
